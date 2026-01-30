@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   sodipodi:docname="mouse_buttons.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="4.1549383"
+     inkscape:cx="146.09122"
+     inkscape:cy="116.24721"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g4">
+      <path
+         id="left_button"
+         style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+         d="m 1.632458,0.132291 c -0.831,0 -1.500167,0.669167 -1.500167,1.500167 v 36.999809 c 0,0.831 0.669167,1.500166 1.500167,1.500166 h 16.470829 c 0.831,0 1.49965,-0.669166 1.49965,-1.500166 v -6.499862 h -4.497916 c -1.108,0 -1.999878,-0.891878 -1.999878,-1.999878 V 0.132291 Z"
+         sodipodi:nodetypes="sssssscsscs" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+         id="middle_button"
+         width="12"
+         height="31"
+         x="14.046873"
+         y="0.13241124"
+         rx="1.5" />
+      <path
+         id="right_button"
+         style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+         d="m 38.577767,0.132291 c 0.831,0 1.500167,0.669167 1.500167,1.500167 v 36.999809 c 0,0.831 -0.669167,1.500166 -1.500167,1.500166 H 22.106938 c -0.831,0 -1.49965,-0.669166 -1.49965,-1.500166 v -6.499862 h 4.497916 c 1.108,0 1.999878,-0.891878 1.999878,-1.999878 V 0.132291 Z"
+         sodipodi:nodetypes="sssssscsscs" />
+    </g>
+  </g>
+</svg>

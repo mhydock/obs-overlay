@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "@jellybrick/dbus-next": "^0.10.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "ws": "^8.19.0"
+  },
+  "name": "obs-mpris-server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "watch": "node --watch server.js",
+    "lint": "eslint . --fix --cache",
+    "format": "prettier --write --experimental-cli src/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1"
+  }
+}
