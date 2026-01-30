@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
+import { program } from "commander";
 import dbus from "@jellybrick/dbus-next";
 import fs from "node:fs/promises";
 import url from "url";
@@ -14,9 +15,15 @@ const PORT = process.env.PORT || 3000;
 const MPRIS_IFACE = "org.mpris.MediaPlayer2.Player";
 const MPRIS_PATH = "/org/mpris/MediaPlayer2";
 const PROPERTIES_IFACE = "org.freedesktop.DBus.Properties";
-const PLAYER_NAME = "audacious";
 
-const playerName = `org.mpris.MediaPlayer2.${PLAYER_NAME}`;
+program.option(
+  "-m, --media-player <player>",
+  "DBus name of media player (just the last part)",
+  "audacious",
+);
+program.parse();
+
+const playerName = `org.mpris.MediaPlayer2.${program.opts().mediaPlayer}`;
 
 const app = express();
 const server = createServer(app);
@@ -89,15 +96,8 @@ wss.on("connection", async (ws, request) => {
   ws.on("message", async (data, isBinary) => {
     const message = data.toString();
     if (message === "ping") {
-      //   console.log("is alive");
       ws.isAlive = true;
-      if (props) {
-        const { value: position } = await props.Get(MPRIS_IFACE, "Position");
-        ws.send(JSON.stringify({ position: position / 1000n }));
-      } else {
-        ws.send("pong");
-      }
-      return;
+      ws.send("pong");
     }
   });
 
@@ -122,6 +122,20 @@ const interval = setInterval(() => {
   });
 }, 30000);
 
+const playback_pos = setInterval(async () => {
+  if (props) {
+    try {
+      const { value: position } = await props.Get(MPRIS_IFACE, "Position");
+      connectionManager.broadcast(JSON.stringify({ position: position / 1000n }));
+    } catch (err) {
+      console.log(err);
+      props = null;
+      currentMetadata = null;
+      await connectToMPRIS();
+    }
+  }
+}, 100);
+
 wss.on("close", () => {
   clearInterval(interval);
 });
@@ -140,9 +154,6 @@ const createPropsListenerDBusNext = async () => {
   obj = await bus.getProxyObject(playerName, MPRIS_PATH);
   player = obj.getInterface(MPRIS_IFACE);
   props = obj.getInterface(PROPERTIES_IFACE);
-
-  // console.log(props);
-  // console.log(player);
 
   const getMetadata = async (metadata) => {
     if (!metadata) {
@@ -164,7 +175,6 @@ const createPropsListenerDBusNext = async () => {
     try {
       const file = await fs.readFile(url.fileURLToPath(artUrl));
       albumArt = Buffer.from(file).toString("base64");
-      // console.log(albumArt);
     } catch (err) {
       console.error(err);
     }
@@ -175,20 +185,34 @@ const createPropsListenerDBusNext = async () => {
     };
   };
 
-  currentMetadata = await getMetadata();
-  // console.log(currentMetadata);
+  try {
+    currentMetadata = await getMetadata();
+  } catch {
+    console.log("nothing in playlist");
+  }
 
   props.on("PropertiesChanged", async (iface, changed, invalidated) => {
     if (changed.hasOwnProperty("Metadata")) {
-      // console.log(changed["Metadata"]);
       currentMetadata = await getMetadata(changed["Metadata"]);
       connectionManager.broadcast(JSON.stringify(currentMetadata));
     }
   });
 };
 
+const connectToMPRIS = async () => {
+  try {
+    await createPropsListenerDBusNext();
+  } catch (err) {
+    console.log(err);
+  }
+
+  if (!props) {
+    setTimeout(connectToMPRIS, 10000);
+  }
+};
+
 server.listen(PORT, async () => {
-  await createPropsListenerDBusNext();
+  connectToMPRIS();
 
   console.log(`Server running on http://localhost:${PORT}`);
 });

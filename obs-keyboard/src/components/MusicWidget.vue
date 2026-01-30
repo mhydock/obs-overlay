@@ -32,7 +32,7 @@ const imgUrl = ref("");
 
 const { status, data, send, open, close } = useWebSocket("ws://localhost:3000", {
   heartbeat: {
-    interval: 1000,
+    interval: 10000,
     pongTimeout: 30000,
   },
   autoReconnect: {
@@ -49,7 +49,18 @@ onMounted(() => {
 });
 
 watch(data, () => {
-  const { metadata: md, position: pos = 0 } = JSON.parse(data.value) as {
+  let parsedData = {};
+
+  try {
+    parsedData = JSON.parse(data.value);
+    if (typeof parsedData !== "object") {
+      return;
+    }
+  } catch {
+    return;
+  }
+
+  const { metadata: md, position: pos = 0 } = parsedData as {
     metadata?: Metadata;
     position: number;
   };
@@ -57,18 +68,14 @@ watch(data, () => {
 
   if (md) {
     Object.assign(metadata, md);
-    console.log("assigned metadata", metadata);
-    console.log(typeof metadata.albumArt);
     const binaryString = atob(metadata.albumArt || "");
 
-    // Step 4: Convert binary string to Uint8Array
     const byteArray = new Uint8Array(binaryString.length);
     for (let i = 0; i < binaryString.length; i++) {
       byteArray[i] = binaryString.charCodeAt(i);
     }
 
     imgUrl.value = metadata.albumArt ? URL.createObjectURL(new Blob([byteArray])) : "";
-    console.log("assigned imgurl");
   }
 });
 </script>

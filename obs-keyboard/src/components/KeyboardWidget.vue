@@ -119,45 +119,10 @@ const keyCodes = keys.map((row: KeyMap) => Object.keys(row)).flat();
 
 const active_keys = reactive(new Set<KeyIndex>());
 
-// const addRemove = (event: KeyboardEvent, fn: "add" | "delete") => {
-//   event.stopPropagation();
-//   if (event.repeat) {
-//     return;
-//   }
-
-//   const key = event.key.toUpperCase();
-//   if (keyVals.includes(key)) {
-//     active_keys[fn](key);
-//   } else if (key === " ") {
-//     active_keys[fn]("SPACE");
-//   }
-
-//   if ((event.shiftKey && fn === "add") || (!event.shiftKey && fn === "delete")) {
-//     active_keys[fn]("SHIFT");
-//   }
-
-//   if ((event.ctrlKey && fn === "add") || (!event.ctrlKey && fn === "delete")) {
-//     active_keys[fn]("CTRL");
-//   }
-
-//   switch (event.code) {
-//     case "Escape":
-//       active_keys[fn]("ESC");
-//       break;
-//     case "Tab":
-//       active_keys[fn]("TAB");
-//       break;
-//     case "CapsLock":
-//       active_keys[fn]("CAPS");
-//       break;
-//   }
-// };
-
 const addRemoveKeysSocket = (rawmsg: string | null) => {
   if (!rawmsg) return;
 
   const msg: Message = JSON.parse(rawmsg);
-  // console.log(msg);
 
   if (!["key_pressed", "key_released"].includes(msg.event_type)) {
     return;
@@ -168,12 +133,7 @@ const addRemoveKeysSocket = (rawmsg: string | null) => {
   if (keyCodes.includes(`key_${msg.rawcode}`)) {
     active_keys[fn](`key_${msg.rawcode}`);
   }
-
-  console.log(msg);
 };
-
-// addEventListener("keydown", (event) => addRemove(event, "add"));
-// addEventListener("keyup", (event) => addRemove(event, "delete"));
 
 watch(() => data, addRemoveKeysSocket);
 </script>

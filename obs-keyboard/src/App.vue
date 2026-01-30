@@ -25,7 +25,6 @@ const params = computed(() => {
 
 const keyboard_style = computed(() => {
   const style = params.value.get("keyboard")?.toLowerCase();
-  console.log(style);
   return style && KEYBOARD_TYPES.includes(style as KeyboardType)
     ? (style as KeyboardType)
     : undefined;

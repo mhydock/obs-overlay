@@ -62,16 +62,12 @@ const addRemoveMouseSocket = (rawmsg: string | null) => {
 
   const msg: Message = JSON.parse(rawmsg);
 
-  // console.log(msg);
-
   if (!["mouse_pressed", "mouse_released"].includes(msg.event_type)) {
     return;
   }
 
   const fn = msg.event_type == "mouse_pressed" ? "add" : "delete";
   const button: string | undefined = buttons[`btn_${msg.button}`];
-
-  //console.log(button);
 
   if (button) {
     active_mouse[fn](button);
@@ -131,7 +127,6 @@ watch(() => data, mouseMoveSocket);
 setInterval(() => {
   if (Date.now() - mouse_time.value > MOVE_TIME_LIMIT && mouse_moving.value) {
     mouse_moving.value = false;
-    // console.log("not moving");
   }
 }, 20);
 </script>
