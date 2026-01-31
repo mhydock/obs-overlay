@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 const MPRIS_IFACE = "org.mpris.MediaPlayer2.Player";
 const MPRIS_PATH = "/org/mpris/MediaPlayer2";
 const PROPERTIES_IFACE = "org.freedesktop.DBus.Properties";
+const BACKUP_INTROSPECTION = await fs.readFile("mpris-dbus-interface.xml");
 
 program.option(
   "-m, --media-player <player>",
@@ -138,6 +139,7 @@ const playback_pos = setInterval(async () => {
 
 wss.on("close", () => {
   clearInterval(interval);
+  clearInterval(playback_pos);
 });
 
 const createPropsListenerDBusNext = async () => {
@@ -152,8 +154,13 @@ const createPropsListenerDBusNext = async () => {
   console.log("Players: ", result);
 
   obj = await bus.getProxyObject(playerName, MPRIS_PATH);
-  player = obj.getInterface(MPRIS_IFACE);
-  props = obj.getInterface(PROPERTIES_IFACE);
+  try {
+    // player = obj.getInterface(MPRIS_IFACE);
+    props = obj.getInterface(PROPERTIES_IFACE);
+  } catch {
+    obj = await bus.getProxyObject(playerName, MPRIS_PATH, BACKUP_INTROSPECTION);
+    props = obj.getInterface(PROPERTIES_IFACE);
+  }
 
   const getMetadata = async (metadata) => {
     if (!metadata) {
@@ -193,8 +200,12 @@ const createPropsListenerDBusNext = async () => {
 
   props.on("PropertiesChanged", async (iface, changed, invalidated) => {
     if (changed.hasOwnProperty("Metadata")) {
-      currentMetadata = await getMetadata(changed["Metadata"]);
-      connectionManager.broadcast(JSON.stringify(currentMetadata));
+      try {
+        currentMetadata = await getMetadata(changed["Metadata"]);
+        connectionManager.broadcast(JSON.stringify(currentMetadata));
+      } catch (err) {
+        console.log(err);
+      }
     }
   });
 };

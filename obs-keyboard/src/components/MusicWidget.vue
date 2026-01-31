@@ -94,9 +94,8 @@ watch(data, () => {
   width: auto;
 
   img {
-    width: 100px;
+    width: auto;
     height: 100px;
-    max-width: 100px;
     max-height: 100px;
   }
 
