@@ -1,6 +1,9 @@
 <template>
   <div class="music">
-    <img :src="imgUrl" />
+    <div class="img-wrapper">
+      <span>🎜</span>
+      <img :src="imgUrl" />
+    </div>
     <div class="metadata">
       <div class="meta-text">
         <h1>{{ metadata.title }}</h1>
@@ -94,9 +97,37 @@ watch(data, () => {
   width: auto;
 
   img {
+    border: 1px solid var(--vt-c-white-mute);
+    border-radius: 2px;
+    min-width: 100px;
     width: auto;
-    height: 100px;
+    min-height: 100px;
     max-height: 100px;
+    z-index: 1;
+  }
+
+  .img-wrapper {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
+
+    span {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      font-size: 5rem;
+      font-variant-emoji: text;
+      line-height: 5rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--vt-c-white-mute);
+      padding-right: 0.25rem;
+    }
   }
 
   .metadata {

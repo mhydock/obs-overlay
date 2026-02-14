@@ -166,21 +166,22 @@ const createPropsListenerDBusNext = async () => {
     if (!metadata) {
       metadata = await props.Get(MPRIS_IFACE, "Metadata");
     }
+
     const { value: position } = await props.Get(MPRIS_IFACE, "Position");
     const {
       value: {
-        "mpris:artUrl": { value: artUrl },
-        "mpris:length": { value: length },
-        "mpris:trackid": { value: trackid },
-        "xesam:album": { value: album },
-        "xesam:artist": { value: artist },
-        "xesam:title": { value: title },
+        "mpris:artUrl": { value: artUrl } = {},
+        "mpris:length": { value: length = 0 } = {},
+        "mpris:trackid": { value: trackid = "" } = {},
+        "xesam:album": { value: album = "" } = {},
+        "xesam:artist": { value: artist = [] } = {},
+        "xesam:title": { value: title = "" } = {},
       },
     } = metadata;
 
     let albumArt;
     try {
-      const file = await fs.readFile(url.fileURLToPath(artUrl));
+      const file = artUrl ? await fs.readFile(url.fileURLToPath(artUrl)) : [];
       albumArt = Buffer.from(file).toString("base64");
     } catch (err) {
       console.error(err);
